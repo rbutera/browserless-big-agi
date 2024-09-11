@@ -1,0 +1,3 @@
+https://navi.local {
+    reverse_proxy big-agi:3000
+}

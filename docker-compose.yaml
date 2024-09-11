@@ -1,0 +1,36 @@
+# scaffold a basic docker-compose.yaml please
+services:
+  big-agi:
+    image: ghcr.io/enricoros/big-agi:latest
+    restart: always
+    ports:
+      - "3000"
+    env_file:
+      - .env
+    command: [ "next", "start", "-p", "3000" ]
+    depends_on:
+      - browserless
+  browserless:
+    image: browserless/chrome:latest
+    restart: always
+    ports:
+      - "9222:3000"
+    environment:
+      - MAX_CONCURRENT_SESSIONS=10
+
+  caddy:
+    image: caddy:latest
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - big-agi
+
+volumes:
+  caddy_data:
+  caddy_config:
